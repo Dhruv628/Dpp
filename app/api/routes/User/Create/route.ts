@@ -26,9 +26,7 @@ export const POST = async (request: NextRequest) => {
       phone,
       password:secPass,
     });
-    const authtoken = jwt.sign({ id: user.id }, secret, {
-      expiresIn: 120 * 60,
-    });
+    const authtoken = jwt.sign({ id: user.id }, secret);
     if (!user) {
       return NextResponse.json({
         message: "Error creating user",

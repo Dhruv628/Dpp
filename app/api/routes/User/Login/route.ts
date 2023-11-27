@@ -31,9 +31,7 @@ export const POST = async (request: NextRequest, response: Response) => {
         },{status:400});
       }
       else{
-        const authtoken = jwt.sign({ id: existingUser.id }, secret, {
-          expiresIn: 120 * 60,
-        });
+        const authtoken = jwt.sign({ id: existingUser.id }, secret);
         const user=await User.findOne({email}).select("-password").select('-role');
          
          return NextResponse.json({

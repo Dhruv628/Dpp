@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaCamera, FaVideo, FaRing } from 'react-icons/fa'; // Import icons
+import { FaCamera, FaVideo, FaRing } from 'react-icons/fa'; 
 
 
  const About = () => {

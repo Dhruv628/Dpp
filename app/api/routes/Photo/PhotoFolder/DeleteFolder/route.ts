@@ -1,3 +1,4 @@
+import connectToDB from "@/app/api/Db";
 import { authMiddleware } from "@/app/api/middleware/AuthMiddleware";
 import PhotoFolder from "@/app/api/models/PhotoFolder/PhotoFolder";
 import { NextRequest, NextResponse } from "next/server";
@@ -9,11 +10,9 @@ export type ImageType = {
 export async function PUT(req: NextRequest, res: Response) {
   const isAuthenticated = await authMiddleware(req);
   if (isAuthenticated) {
-    try {
-      const reqBody = await req.json();
-      const { name } = reqBody;
-      const id=req.url.split("id=")[1]
-      const PhotoFolderExists = await PhotoFolder.find({ name: name,_id:id });
+    try { 
+      const id=req.url.split("id=")[1];
+      const PhotoFolderExists = await PhotoFolder.find({ _id:id });
       if (!PhotoFolderExists) {
         return NextResponse.json(
           { success: false, message: "Folder does not exist." },
@@ -21,7 +20,7 @@ export async function PUT(req: NextRequest, res: Response) {
         );
       }
       const updatedPhotoFolder = await PhotoFolder.findOneAndDelete({
-        name: name,_id:id
+       _id:id
       });
       return NextResponse.json(
         { success: true, updatedPhotoFolder },
@@ -40,3 +39,5 @@ export async function PUT(req: NextRequest, res: Response) {
     );
   }
 }
+
+connectToDB();

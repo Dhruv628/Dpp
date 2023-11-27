@@ -11,9 +11,9 @@ export const PUT = async (req: NextRequest, res: Response) => {
   if (isAuthenticated) {
     try {
       const reqBody = await req.json();
-      const { name, url } = reqBody;
+      const {url} = reqBody;
       const id=req.url.split("id=")[1]
-      const PhotoFolderExists = await PhotoFolder.findOne({ name: name,_id:id });
+      const PhotoFolderExists = await PhotoFolder.findOne({_id:id });
       if (!PhotoFolderExists) {
         return NextResponse.json(
           { success: false, message: "Folder doesn't exist" },
@@ -32,8 +32,8 @@ export const PUT = async (req: NextRequest, res: Response) => {
       imageArray.push({ url: url });
       // Create or update the PhotoFolder document
       const photoFolder = await PhotoFolder.findOneAndUpdate(
-        { name: name },
-        { name: name, images: imageArray },
+        {_id:id },
+        {  images: imageArray },
         { new: true, upsert: true }
       );
 

@@ -10,13 +10,13 @@ export async function PUT(req: NextRequest, res: Response) {
   const isAuthenticated = await authMiddleware(req);
   if (isAuthenticated) {
     try {
-      const id = req.headers.get("id");
       const reqBody = await req.json();
       const { name } = reqBody;
-      const PhotoFolderExists = await PhotoFolder.find({ _id: id });
+      const id=req.url.split("id=")[1];
+      const PhotoFolderExists = await PhotoFolder.findOne({_id:id}); 
       if (!PhotoFolderExists) {
         return NextResponse.json(
-          { success: false, message: "Folder does not exist." },
+          { success: false, message: "Folder does not exist ....." },
           { status: 400 }
         );
       }
@@ -25,7 +25,7 @@ export async function PUT(req: NextRequest, res: Response) {
         { name: name }
       );
       return NextResponse.json(
-        { success: true, updatedPhotoFolder },
+        { success: true,updatedPhotoFolder },
         { status: 200 }
       );
     } catch (error) {
