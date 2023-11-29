@@ -17,7 +17,7 @@ import ServiceDropDown from "../DropDown/ServiceDropDown";
           About
         </Link>
       </li>
-      <li> 
+      <li className="text-black hover:text-blue-500"> 
          <ServiceDropDown/>
       </li>
       <li>
