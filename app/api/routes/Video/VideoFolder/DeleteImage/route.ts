@@ -11,14 +11,14 @@ export async function PUT(req: NextRequest, res: Response) {
   if(isAuthenticated){
     try {
       const reqBody = await req.json();
-      const { name, url } = reqBody;
+      const {  url } = reqBody;
       const id=req.url.split("id=")[1]
-      const VideoFolderExists = await VideoFolder.find({ name: name,_id:id });
+      const VideoFolderExists = await VideoFolder.find({ _id:id });
       let imageArray: ImageType[] = VideoFolderExists[0]?.images || [];
       const updatedImageArray = imageArray.filter((e) => e.url !== url); 
       const updatedVideoFolder = await VideoFolder.findOneAndUpdate(
-        { name: name,_id:id },
-        { name: name, images: updatedImageArray }
+        {  _id:id },
+        {  images: updatedImageArray }
       );
       return NextResponse.json(
         { success: true, updatedVideoFolder },

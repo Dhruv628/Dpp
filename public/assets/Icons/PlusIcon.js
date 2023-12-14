@@ -1,11 +1,11 @@
 import React from "react";
 
-function PlusIcon() {
+function PlusIcon({h,w}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className="svg-PlusIcon"
-      style={{ width: "35px", height: "35px"}}
+      style={{ width: `${w}px`, height: `${h}px`}}
       fill="currentColor"
       overflow="hidden"
       viewBox="0 0 1024 1024"

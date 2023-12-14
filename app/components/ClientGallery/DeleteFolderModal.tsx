@@ -1,18 +1,15 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import Dustbin from "@/public/assets/Icons/dustbin";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteAFolder } from "@/app/redux/actions/photographyReducerAction";
+import { useDispatch, useSelector } from "react-redux"; 
+import { deleteAFolderClientGallery } from "@/app/redux/actions/clientGalleryAction";
 
 export default function DeleteFolderModal({
   fId,
   setFoldername,
-  setloading
-  
 }: {
   fId: any;
   setFoldername: any;
-  setloading:any;
 }) {
   let [isOpen, setIsOpen] = useState(false);
   const authtoken = useSelector(
@@ -32,7 +29,7 @@ export default function DeleteFolderModal({
   const deleteFolderApi = async () => {
     try {
       const deletedFolder = await fetch(
-        `/api/routes/Photo/PhotoFolder/DeleteFolder?id=${fId}`,
+        `/api/routes/Photo/ClientGallery/DeleteFolder?id=${fId}`,
         {
           method: "PUT",
           headers: {
@@ -48,11 +45,9 @@ export default function DeleteFolderModal({
   };
 
   const deleteFolder = async () => {
-    setloading(true);
-    dispatch(deleteAFolder(fId));
+    dispatch(deleteAFolderClientGallery(fId));
     setFoldername(0);
     deleteFolderApi();
-    setloading(false);
   };
 
   return (
@@ -62,7 +57,7 @@ export default function DeleteFolderModal({
           onClick={() => {
             openModal();
           }}
-          className="flex  items-center gap-3"
+          className="flex w-full text-black items-center gap-3"
         >
           <Dustbin h={21} w={21} fill="black" /> Delete Folder
         </button>

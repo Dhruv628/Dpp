@@ -1,15 +1,17 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment,  useState } from "react";
 import PlusIcon from "@/public/assets/Icons/PlusIcon";
 import { useDispatch, useSelector } from "react-redux";
 import { createFolder } from "@/app/redux/actions/photographyReducerAction";
-import ImageUpload from "../ImageUpload";
-import ProgressBarComponent from "../../ProgressBar/ProgressBar";  
+import ImageUpload from "../Services/ImageUpload";
+import ProgressBarComponent from "../ProgressBar/ProgressBar"; 
+import { createFolderClientGallery } from "@/app/redux/actions/clientGalleryAction";
 
-export default function CreateFolderModal({h,w}: {h:any,w:any}) {
+export default function CreateFolderModal({}: {}) {
   const dispatch = useDispatch();
   let [isOpen, setIsOpen] = useState(false);
   const [folderName, setFolderName] = useState(null);
+  const [folderPassword, setFolderPassword] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [progressBarDisplay, setprogressBarDisplay] = useState(false);
   const [progress, setprogress] = useState(0)
@@ -34,9 +36,10 @@ export default function CreateFolderModal({h,w}: {h:any,w:any}) {
       const sendBody = {
         name: folderName,
         url: imageUrl,
+        password:folderPassword
       };
       const createdFolder = await fetch(
-        "/api/routes/Photo/PhotoFolder/Create",
+        "/api/routes/Photo/ClientGallery/Create",
         {
           method: "POST",
           headers: {
@@ -59,15 +62,15 @@ export default function CreateFolderModal({h,w}: {h:any,w:any}) {
       try {
         setprogressBarDisplay(true)
         const response = await createaFolderApi();
-        if (response.message === "Folder already exists.") {
+        if (response.message === "Client Gallery already exists") {
           setImageUrl(null);
           setFolderName(null);
           setprogress(0);
           setprogressBarDisplay(false)
           return alert("Folder with the same name already exists.");
         } else {
-          const createdPhotoFolder = response.photoFolder;
-          dispatch(createFolder(createdPhotoFolder));
+          const createdPhotoFolder = response.clientGallery;
+          dispatch(createFolderClientGallery(createdPhotoFolder));
           closeModal();
           setImageUrl(null);
           setFolderName(null);
@@ -87,12 +90,12 @@ export default function CreateFolderModal({h,w}: {h:any,w:any}) {
   };
   return (
     <>
-      <div className="">
+      <div className="text-black">
         <button
           onClick={openModal}
-          className="flex items-center gap-3 text-white rounded-full  "
+          className="flex items-center z-30 gap-3 text-white rounded-full  "
         >
-          <PlusIcon h={h} w={w}/>
+          <PlusIcon />
         </button>
       </div>
 
@@ -109,12 +112,23 @@ export default function CreateFolderModal({h,w}: {h:any,w:any}) {
               </Dialog.Title>
               <div className="mb-6">
                 <label className="block text-sm font-semibold text-gray-800 mb-1">
-                  Folder Name<span className="text-red-600">*</span>
+                  Name<span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
                   onChange={(e: any) => setFolderName(e.target.value)}
                   placeholder="Enter folder name"
+                  className="rounded-sm border border-gray-300 py-2 px-3 w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-800 mb-1">
+                  Password<span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  onChange={(e: any) => setFolderPassword(e.target.value)}
+                  placeholder="Enter folder password"
                   className="rounded-sm border border-gray-300 py-2 px-3 w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>

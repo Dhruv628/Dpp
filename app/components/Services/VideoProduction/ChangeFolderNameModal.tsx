@@ -1,24 +1,20 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import Dustbin from "@/public/assets/Icons/dustbin";
+import WritingIcon from "@/public/assets/Icons/Writing";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAFolder } from "@/app/redux/actions/photographyReducerAction";
+import { changeVideoFolderName } from "@/app/redux/actions/videoAction";
 
-export default function DeleteFolderModal({
-  fId,
-  setFoldername,
-  setloading
-  
-}: {
-  fId: any;
-  setFoldername: any;
-  setloading:any;
-}) {
+const ChangeFolderNameModal = ({ changeNameFid }: { changeNameFid: any }) => {
   let [isOpen, setIsOpen] = useState(false);
   const authtoken = useSelector(
     (state) => (state as any).userReducer?.authtoken
   );
 
+  const videos = useSelector((state) => (state as any).videosReducer?.videos);
+
+  const [newFolderName, setNewFolderName] = useState(
+    videos.find((e: any) => e._id === changeNameFid).name
+  );
   function closeModal() {
     setIsOpen(false);
   }
@@ -29,32 +25,32 @@ export default function DeleteFolderModal({
 
   const dispatch = useDispatch();
 
-  const deleteFolderApi = async () => {
+  const changeFolderNameApi = async () => {
     try {
-      const deletedFolder = await fetch(
-        `/api/routes/Photo/PhotoFolder/DeleteFolder?id=${fId}`,
+      const sentBody = {
+        name: newFolderName,
+      };
+      const updatedFolder = await fetch(
+        `/api/routes/Video/VideoFolder/ChangeFolderName?id=${changeNameFid}`,
         {
           method: "PUT",
           headers: {
             authtoken: authtoken,
           },
+          body: JSON.stringify(sentBody),
         }
       );
-      const res = await deletedFolder.json();
+      const res = await updatedFolder.json();
       console.log(res);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const deleteFolder = async () => {
-    setloading(true);
-    dispatch(deleteAFolder(fId));
-    setFoldername(0);
-    deleteFolderApi();
-    setloading(false);
+  const changeFolderNameFunc = async () => {
+    dispatch(changeVideoFolderName({ changeNameFid, newFolderName }));
+    changeFolderNameApi();
   };
-
   return (
     <>
       <div className="">
@@ -64,7 +60,7 @@ export default function DeleteFolderModal({
           }}
           className="flex  items-center gap-3"
         >
-          <Dustbin h={21} w={21} fill="black" /> Delete Folder
+          <WritingIcon h={21} w={21} fill="black" /> Change Folder Name
         </button>
       </div>
 
@@ -98,16 +94,26 @@ export default function DeleteFolderModal({
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Are you sure you want to delete this folder?
+                    Are you sure you want to change the name of this folder?
                   </Dialog.Title>
-
+                  <div className="w-full mt-8">
+                    <input
+                      type="text"
+                      value={newFolderName}
+                      onChange={(e) => setNewFolderName(e.target.value)}
+                      name=""
+                      className="border rounded-md p-2 w-full text-black"
+                      placeholder="Enter the new folder name"
+                      id=""
+                    />
+                  </div>
                   <div className="mt-8 gap-2 flex justify-center">
                     <button
                       type="button"
                       className="inline-flex min-w-[4rem] justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={() => {
                         closeModal();
-                        deleteFolder();
+                        changeFolderNameFunc();
                       }}
                     >
                       Yes
@@ -128,4 +134,6 @@ export default function DeleteFolderModal({
       </Transition>
     </>
   );
-}
+};
+
+export default ChangeFolderNameModal;

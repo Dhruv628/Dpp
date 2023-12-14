@@ -2,9 +2,10 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import WritingIcon from "@/public/assets/Icons/Writing";
 import { useDispatch, useSelector } from "react-redux";
-import { changeFolderName} from "@/app/redux/actions/photographyReducerAction";
+import { changeFolderNameClientGallery } from "@/app/redux/actions/clientGalleryAction";
 
-const ChangeFolderNameModal = ({changeNameFid,setloading}:{changeNameFid:any,setloading:any}) => {
+
+const ChangeFolderNameModal = ({changeNameFid}:{changeNameFid:any}) => {
     let [isOpen, setIsOpen] = useState(false);
     const authtoken = useSelector(
         (state) => (state as any).userReducer?.authtoken
@@ -25,12 +26,11 @@ const ChangeFolderNameModal = ({changeNameFid,setloading}:{changeNameFid:any,set
   
     const changeFolderNameApi = async () => {
       try {
-        setloading(true)
         const sentBody={
             name:newFolderName
         }
         const updatedFolder = await fetch(
-          `/api/routes/Photo/PhotoFolder/ChangeFolderName?id=${changeNameFid}`,
+          `/api/routes/Photo/ClientGallery/ChangeFolderName?id=${changeNameFid}`,
           {
             method: "PUT",
             headers: {
@@ -47,9 +47,8 @@ const ChangeFolderNameModal = ({changeNameFid,setloading}:{changeNameFid:any,set
     };
   
     const changeFolderNameFunc = async () => {
-      dispatch(changeFolderName({changeNameFid,newFolderName})); 
+      dispatch(changeFolderNameClientGallery({changeNameFid,newFolderName})); 
       changeFolderNameApi();
-      setloading(false);
     };
   return (
     <>
@@ -58,14 +57,14 @@ const ChangeFolderNameModal = ({changeNameFid,setloading}:{changeNameFid:any,set
         onClick={() => {
           openModal();
         }}
-        className="flex  items-center gap-3"
+        className="flex w-full text-black items-center gap-3"
       >
         <WritingIcon h={21} w={21} fill="black" /> Change Folder Name
       </button>
     </div>
 
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+      <Dialog as="div" className="relative z-50" onClose={closeModal}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -89,7 +88,7 @@ const ChangeFolderNameModal = ({changeNameFid,setloading}:{changeNameFid:any,set
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full  max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"

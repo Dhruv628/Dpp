@@ -50,8 +50,8 @@ export default function MyModal({ id, url }: { id: any; url: any }) {
   return (
     <>
       <div className="">
-        <button type="button" onClick={openModal} className="">
-          <Dustbin w={30} h={30} fill="black" />
+        <button type="button" onClick={openModal} className="bg-blue-500 bg-opacity-60 flex justify-center  w-[2.5rem] px-2 py-2 rounded-sm">
+          <Dustbin w={20} h={20} fill="white" />
         </button>
       </div>
 

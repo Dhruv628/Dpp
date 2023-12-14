@@ -1,23 +1,13 @@
+import { Dialog, Transition } from "@headlessui/react"; 
+import { Fragment, useState } from "react";
 import SettingIcon from "@/public/assets/Icons/settingIcon";
 import DeleteFolderModal from "./DeleteFolderModal";
 import ChangeFolderNameModal from "./ChangeFolderNameModal";
-import UploadPhotoModal from "./UploadPhotoModal";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import UploadPhotoModal from "./UploadVideoModal";
+ 
 
-export default function SettingPopover({
-  fId,
-  setFoldername,
-  index,
-  setloading,
-  lastIndex,
-}: {
-  fId: any;
-  setFoldername: any;
-  index: any;
-  setloading: any;
-  lastIndex: any;
-}) {
+
+export default function SettingPopover({fId,setFoldername,index}:{fId:any,setFoldername:any,index:any}) {
   const [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
@@ -66,28 +56,12 @@ export default function SettingPopover({
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="shadow-xl text-black  bg-white rounded-md px-2 py-2 flex flex-col gap-1">
-                  <div className="flex hover:bg-gray-200 p-2 focus:bg-gray-200 hover:cursor-pointer  rounded-lg items-center gap-2">
-                    <UploadPhotoModal
-                      setloading={setloading}
-                      index={index}
-                      id={fId}
-                    />
-                  </div>
-                  <hr />
-                  <div className=" hover:bg-gray-200 focus:bg-gray-200 p-2  rounded-lg ">
-                    <DeleteFolderModal
-                      setloading={setloading}
-                      setFoldername={setFoldername}
-                      fId={fId}
-                    />
-                  </div>
-                  <hr />
-                  <div className=" hover:bg-gray-200 focus:bg-gray-200  p-2  rounded-lg  ">
-                    <ChangeFolderNameModal
-                      setloading={setloading}
-                      changeNameFid={fId}
-                    />
-                  </div>
+                <div className="flex hover:bg-gray-200 p-2 focus:bg-gray-200  rounded-lg items-center gap-2"><UploadPhotoModal index={index} id={fId}/></div>    
+                  <hr />             
+                  <div className=" hover:bg-gray-200 focus:bg-gray-200 p-2  rounded-lg "><DeleteFolderModal setFoldername={setFoldername} fId={fId}/></div>  
+                  <hr /> 
+                  <div className=" hover:bg-gray-200 focus:bg-gray-200  p-2  rounded-lg  "><ChangeFolderNameModal changeNameFid={fId}/></div>               
+
                 </Dialog.Panel>
               </Transition.Child>
             </div>

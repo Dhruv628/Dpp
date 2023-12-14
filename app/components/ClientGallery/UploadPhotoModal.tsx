@@ -2,22 +2,19 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import AddImage from "@/public/assets/Icons/AddImage";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createFolder,
-  uploadPhoto,
-} from "@/app/redux/actions/photographyReducerAction";
-import ImageUpload from "../ImageUpload";
-import ProgressBarComponent from "../../ProgressBar/ProgressBar";
-import ImageUploadTwo from "../ImageUploadTwo";
+import ImageUpload from "../Services/ImageUpload";
+import ImageUploadTwo from "../Services/ImageUploadTwo";
+import ProgressBarComponent from "../ProgressBar/ProgressBar";
+import { uploadPhotoClientGallery } from "@/app/redux/actions/clientGalleryAction";
 
 export default function UploadPhotoModal({
   id,
   index,
-  setloading
+  sethitRedux
 }: {
   id: any;
   index: any;
-  setloading:any;
+  sethitRedux:any
 }) {
   const dispatch = useDispatch();
   let [isOpen, setIsOpen] = useState(false);
@@ -29,6 +26,7 @@ export default function UploadPhotoModal({
   );
 
   function closeModal() {
+    setprogressBarDisplay(false);
     setIsOpen(false);
   }
 
@@ -41,6 +39,7 @@ export default function UploadPhotoModal({
   };
 
   useEffect(() => {
+    console.log(imageUrl);
   }, [imageUrl]);
 
   const uploadImageApi = async () => {
@@ -49,7 +48,7 @@ export default function UploadPhotoModal({
         url: imageUrl,
       };
       const createdFolder = await fetch(
-        `/api/routes/Photo/PhotoFolder/Upload?id=${id}`,
+        `/api/routes/Photo/ClientGallery/Upload?id=${id}`,
         {
           method: "PUT",
           headers: {
@@ -61,7 +60,7 @@ export default function UploadPhotoModal({
       const res = await createdFolder.json();
       return res; // Return the created folder
     } catch (error) {
-      throw new Error("Failed to create folder"); // Throw an error for better handling
+      console.log(error); // Throw an error for better handling
     }
   };
 
@@ -72,83 +71,82 @@ export default function UploadPhotoModal({
     cloudname: any,
     apiKey: any
   ) => {
-    setprogressBarDisplay(true);
     if (index === 0 || index === 1 || index === 2 || index >= 6) {
+      updateProgressDispatch(0);
       setprogressBarDisplay(true);
-      updateProgressDispatch(10);
       updateProgressDispatch(30);
-      let tempUrl = await ImageUpload(e, `${uploadPreset}`, `${cloudname}`);
+      let tempUrl = await ImageUpload(e, `${uploadPreset}`, `${cloudname}`); 
       updateProgressDispatch(100);
       if (tempUrl === "Error") {
+        setprogressBarDisplay(false);
         alert("Error uploading image, please try again.");
-      setprogressBarDisplay(false);
       } else if (tempUrl === "File size exceeds the maximum limit of 5 MB.") {
         {
-          alert(`${tempUrl}`);
           setprogressBarDisplay(false);
+          alert(`${tempUrl}`);
         }
-      } else {
-        setImageUrl(tempUrl);
+      } else { 
+        setImageUrl(tempUrl); 
       }
     } else {
-      setprogressBarDisplay(true);
-      updateProgressDispatch(10);
-      updateProgressDispatch(30);
       let tempUrl = await ImageUploadTwo(e, `${apiKey}`);
-      updateProgressDispatch(100);
       if (tempUrl === "Error") {
         alert("Error uploading image, please try again.");
-        setprogressBarDisplay(false);
       } else if (tempUrl === "File size exceeds the maximum limit of 5 MB.") {
         {
           alert(`${tempUrl}`);
-          setprogressBarDisplay(false);
         }
       } else {
-        setImageUrl(tempUrl); 
+        setprogressBarDisplay(true);
+        setImageUrl(tempUrl);
+        updateProgressDispatch(10);
+        updateProgressDispatch(30);
+        updateProgressDispatch(100);
       }
     }
   };
 
   const uploadImageFunc = async () => {
     if (typeof imageUrl === "string") {
-      try {
-        setloading(true); 
+      try { 
         const response = await uploadImageApi();
         if (response.message === "Image already exists") {
           setImageUrl(null);
           setprogress(0);
           setprogressBarDisplay(false);
-          setloading(false);
           return alert("This image already exists.");
         } else {
-          const temp = response.photoFolder.images;
+          setprogressBarDisplay(true);
+          const temp = response.clientGallery.images;
           const uploadedImage = temp[temp.length - 1];
-          dispatch(uploadPhoto({ UfId: id, Uurl: uploadedImage }));
+          console.log(uploadedImage);
+          dispatch(uploadPhotoClientGallery({ UfId: id, Uurl: uploadedImage }));
           closeModal();
+          sethitRedux((prev:any)=>prev+1);
           setImageUrl(null);
           setprogress(0);
           setprogressBarDisplay(false);
-          setloading(false);
         }
       } catch (error) {
         console.log(error);
         setprogress(0);
         setprogressBarDisplay(false);
-        setloading(false);
       }
     } else {
       setprogress(0);
       setprogressBarDisplay(false);
-      setloading(false);
       return alert("Please fill all the details");
     }
   };
   return (
     <>
-      <div onClick={openModal} className="flex items-center gap-2">
-        <AddImage h={25} w={25}  fill="black" /> Add a photo
-      </div>
+      <button
+        onClick={openModal}
+        className="flex w-full   text-lg text-black items-end gap-1"
+      >
+        <AddImage h={27} w={27} fill="black" />
+        <span className=" translate-y-1">Add a photo</span>
+      </button>
       <Transition show={isOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -238,30 +236,27 @@ export default function UploadPhotoModal({
                         "dnsydvkyd",
                         "ss"
                       );
-
                     }
                   }}
                   type="file"
-                  className="rounded-sm text-gray-800 p-2 w-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="rounded-sm text-gray-800 p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
-              <div
-                className={`${
-                  progressBarDisplay ? "flex" : "hidden"
-                } flex-col px-1`}
+            {progressBarDisplay && <div
+                className="flex flex-col px-1"
               >
                 <i className="text-sm mb-1">
                   {progress === 100 ? "UPLOADED" : "Uploading image..."}
                 </i>
                 <ProgressBarComponent progress={progress} />
-              </div>
+              </div> } 
               <div className="text-sm mt-6 font-semibold text-gray-800 mb-4">
                 Are you sure you want to add this image?
               </div>
               <div className="flex gap-4">
                 <button
                   type="button"
-                  onClick={uploadImageFunc}
+                  onClick={()=>{uploadImageFunc(); }}
                   className="flex-1 rounded-md bg-blue-500 hover:bg-blue-600 text-white py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   Yes

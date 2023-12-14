@@ -1,11 +1,15 @@
-import { Schema,model, models } from "mongoose";
- 
+import { Schema, model, models } from "mongoose";
 
 const ClientGallerySchema = new Schema({
   name: {
     type: String,
     required: true,
     trim: true,
+  },
+  password:{
+    type:String,
+    trim:true,
+    required: true
   },
   images: [
     {
@@ -21,5 +25,6 @@ const ClientGallerySchema = new Schema({
     default: Date.now(),
   },
 });
+
 const ClientGallery = models.ClientGallery || model("ClientGallery", ClientGallerySchema);
 export default ClientGallery;

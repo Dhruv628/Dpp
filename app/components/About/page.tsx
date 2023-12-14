@@ -1,19 +1,22 @@
 import React from 'react'
 import { FaCamera, FaVideo, FaRing } from 'react-icons/fa'; 
+import NavBar from '../Navbar/page';
 
 
  const About = () => {
   return (
+    <div className='bg-gray-200 h-[100vh]'>
+    <NavBar/>
     <div className="container mx-auto my-12">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div className="md:col-span-1">
         <img
           src="https://www.katebackdrop.com/cdn/shop/articles/cody-lannom-G95AReIh_Ko-unsplash.jpg?v=1599639728&width=1000" // Replace with your image URL
           alt="Photography Studio"
-          className="w-full h-auto rounded-lg shadow-lg"
+          className="w-full h-auto rounded-lg shadow-xl"
         />
       </div>
-      <div className="md:col-span-1 flex flex-col justify-center">
+      <div className="md:col-span-1 mt-[20vh] flex flex-col shadow-xl justify-center">
         <div className="bg-white p-8 rounded-lg shadow-lg">
           <h2 className="text-4xl font-extrabold text-gray-800 mb-4">About Our Photography Studio</h2>
           <p className="text-lg text-gray-600 leading-relaxed">
@@ -50,6 +53,7 @@ import { FaCamera, FaVideo, FaRing } from 'react-icons/fa';
         </div>
       </div>
     </div>
+  </div>
   </div>
   )
 }

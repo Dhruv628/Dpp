@@ -10,20 +10,18 @@ export async function PUT(req: NextRequest, res: Response) {
   const isAuthenticated = await authMiddleware(req);
   if (isAuthenticated) {
     try {
-      const id = req.headers.get("id");
+      const id=req.url.split("id=")[1]
       const reqBody = await req.json();
       const { name } = reqBody;
-      const VideoFolderExists = await VideoFolder.find({ _id: id });
+      const VideoFolderExists = await VideoFolder.findOne({ _id: id });
       if (!VideoFolderExists) {
         return NextResponse.json(
           { success: false, message: "Folder does not exist." },
           { status: 400 }
         );
       }
-      const updatedVideoFolder = await VideoFolder.findOneAndUpdate(
-        { _id: id },
-        { name: name }
-      );
+    VideoFolderExists.name=name;
+    const updatedVideoFolder =await VideoFolderExists.save(); 
       return NextResponse.json(
         { success: true, updatedVideoFolder },
         { status: 200 }

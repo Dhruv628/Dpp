@@ -4,7 +4,7 @@ import ServiceDropDown from "../DropDown/ServiceDropDown";
 
  const NavBar = () => {
   return (
-    <nav className="bg-[#f1f5f9] p-6 flex justify-between shadow-md">
+    <nav  style={{zIndex:1000}}  className="bg-[#f1f5f9] p-6 flex justify-between shadow-md">
     <div className="logo font-bold text-2xl text-black">Your Logo</div>
     <ul className="nav-links flex space-x-10">
       <li>

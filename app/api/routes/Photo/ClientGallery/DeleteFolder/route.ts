@@ -9,11 +9,9 @@ export type ImageType = {
 export async function PUT(req: NextRequest, res: Response) {
   const isAuthenticated = await authMiddleware(req);
   if (isAuthenticated) {
-    try {
-      const reqBody = await req.json();
-      const { name } = reqBody;
+    try { 
       const id=req.url.split("id=")[1]
-      const clientGalleryExists = await ClientGallery.find({ name: name,_id:id });
+      const clientGalleryExists = await ClientGallery.find({ _id:id });
       if (!clientGalleryExists) {
         return NextResponse.json(
           { success: false, message: "Client Gallery does not exist." },
@@ -21,7 +19,7 @@ export async function PUT(req: NextRequest, res: Response) {
         );
       }
       const updatedClientGallery = await ClientGallery.findOneAndDelete({
-        name: name,_id:id
+      _id:id
       });
       return NextResponse.json(
         { success: true },

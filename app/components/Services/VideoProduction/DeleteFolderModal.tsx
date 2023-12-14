@@ -3,16 +3,14 @@ import { Fragment, useState } from "react";
 import Dustbin from "@/public/assets/Icons/dustbin";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAFolder } from "@/app/redux/actions/photographyReducerAction";
+import { deleteAVideoFolder } from "@/app/redux/actions/videoAction";
 
 export default function DeleteFolderModal({
   fId,
   setFoldername,
-  setloading
-  
 }: {
   fId: any;
   setFoldername: any;
-  setloading:any;
 }) {
   let [isOpen, setIsOpen] = useState(false);
   const authtoken = useSelector(
@@ -32,7 +30,7 @@ export default function DeleteFolderModal({
   const deleteFolderApi = async () => {
     try {
       const deletedFolder = await fetch(
-        `/api/routes/Photo/PhotoFolder/DeleteFolder?id=${fId}`,
+        `/api/routes/Video/VideoFolder/DeleteFolder?id=${fId}`,
         {
           method: "PUT",
           headers: {
@@ -48,11 +46,9 @@ export default function DeleteFolderModal({
   };
 
   const deleteFolder = async () => {
-    setloading(true);
-    dispatch(deleteAFolder(fId));
+    dispatch(deleteAVideoFolder(fId));
     setFoldername(0);
     deleteFolderApi();
-    setloading(false);
   };
 
   return (

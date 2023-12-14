@@ -2,16 +2,9 @@ import React from "react";
 
 const Loader = () => {
   return (
-    <div className="loader-container">
-      <div className="loader">
-        <div className="camera">
-          <div className="camera-lens"></div>
-          <div className="camera-body"></div>
-          <div className="camera-strap"></div>
-        </div>
-        <div className="shutter"></div>
+    <div className="flex justify-center items-center h-[100vh]">
+      <img src="/assets/loader.gif" alt="" />
       </div>
-    </div>
   );
 };
 

@@ -9,11 +9,9 @@ export type ImageType = {
 export async function PUT(req: NextRequest, res: Response) {
   const isAuthenticated = await authMiddleware(req);
   if (isAuthenticated) {
-    try {
-      const reqBody = await req.json();
-      const { name } = reqBody;
-      const id=req.url.split("id=")[1]
-      const VideoFolderExists = await VideoFolder.find({ name: name,_id:id });
+    try { 
+      const id=req.url.split("id=")[1];
+      const VideoFolderExists = await VideoFolder.findOne({  _id:id });
       if (!VideoFolderExists) {
         return NextResponse.json(
           { success: false, message: "Folder does not exist." },
@@ -21,7 +19,7 @@ export async function PUT(req: NextRequest, res: Response) {
         );
       }
       const updatedVideoFolder = await VideoFolder.findOneAndDelete({
-        name: name,_id:id
+       _id:id
       });
       return NextResponse.json(
         { success: true, updatedVideoFolder },

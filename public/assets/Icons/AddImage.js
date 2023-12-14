@@ -1,11 +1,11 @@
 import React from "react";
 
-function AddImage({fill}) {
+function AddImage({fill,h,w}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className="svg-AddImage"
-      style={{ width: "25px", height: "25px" }}
+      style={{ width: `${w}px`, height: `${h}px` }}
       fill={fill}
       overflow="hidden"
       viewBox="0 0 1024 1024"

@@ -11,9 +11,9 @@ export const PUT = async (req: NextRequest, res: Response) => {
   if (isAuthenticated) {
     try {
       const reqBody = await req.json();
-      const { name, url } = reqBody;
+      const  { url } = reqBody;
       const id=req.url.split("id=")[1]
-      const VideoFolderExists = await VideoFolder.findOne({ name: name,_id:id });
+      const VideoFolderExists = await VideoFolder.findOne({  _id:id });
       if (!VideoFolderExists) {
         return NextResponse.json(
           { success: false, message: "Folder doesn't exist" },
@@ -24,7 +24,7 @@ export const PUT = async (req: NextRequest, res: Response) => {
       let imageArray: ImageType[] = VideoFolderExists?.images; 
       if (imageArray.find((e) => e.url === url)) {
         return NextResponse.json(
-          { success: false, message: "Image already exists" },
+          { success: false, message: "Video already exists" },
           { status: 200 }
         );
       }
@@ -32,8 +32,8 @@ export const PUT = async (req: NextRequest, res: Response) => {
       imageArray.push({ url: url });
       // Create or update the VideoFolder document
       const videoFolder = await VideoFolder.findOneAndUpdate(
-        { name: name },
-        { name: name, images: imageArray },
+        { _id: id },
+        {  images: imageArray },
         { new: true, upsert: true }
       );
 

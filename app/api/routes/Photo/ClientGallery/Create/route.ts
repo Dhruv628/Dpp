@@ -11,8 +11,8 @@ export const POST = async (req: NextRequest, res: Response) => {
   if (isAuthenticated) {
     try {
       const reqBody = await req.json();
-      const { name, url } = reqBody;
-      const clientGalleryExists = await ClientGallery.findOne({ name: name  });
+      const { name, url,password } = reqBody;
+      const clientGalleryExists = await ClientGallery.findOne({name:name});
       if (clientGalleryExists) {
         return NextResponse.json(
           { success: false, message: "Client Gallery already exists" },
@@ -23,10 +23,12 @@ export const POST = async (req: NextRequest, res: Response) => {
       let imageArray: ImageType[] = [];
 
       imageArray.push({ url: url });
+ 
       // Create or update the ClientGallery document
       const clientGallery = await ClientGallery.create({
-        name: name,
+        name:name,
         images: imageArray,
+        password:password
       });
 
       // Do whatever you want

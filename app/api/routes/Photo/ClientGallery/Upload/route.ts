@@ -11,9 +11,9 @@ export const PUT = async (req: NextRequest, res: Response) => {
   if (isAuthenticated) {
     try {
       const reqBody = await req.json();
-      const { name, url } = reqBody;
+      const {  url } = reqBody;
       const id=req.url.split("id=")[1]
-      const clientGalleryExists = await ClientGallery.findOne({ name: name,_id:id });
+      const clientGalleryExists = await ClientGallery.findOne({_id:id });
       if (!clientGalleryExists) {
         return NextResponse.json(
           { success: false, message: "Client Gallery doesn't exist" },
@@ -29,14 +29,11 @@ export const PUT = async (req: NextRequest, res: Response) => {
         );
       }
       // Push the new url into the imageArray
-      imageArray.push({ url: url });
-      // Create or update the ClientGallery document
-      const clientGallery = await ClientGallery.findOneAndUpdate(
-        { name: name,_id:id },
-        { name: name, images: imageArray },
-        { new: true, upsert: true }
-      );
-
+      imageArray.push({ url: url }); 
+      clientGalleryExists.images=imageArray;
+      const clientGallery=await clientGalleryExists.save();
+      
+  
       // Do whatever you want
       return NextResponse.json(
         { success: true, clientGallery },

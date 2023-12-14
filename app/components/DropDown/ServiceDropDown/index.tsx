@@ -62,8 +62,8 @@ const ServiceDropDown=()=> {
                   </Link>
                 )}
               </Menu.Item>
-              <hr />
-              <Menu.Item>
+              {/* <hr /> */}
+              {/* <Menu.Item>
                 {({ active }) => (
                   <Link href="/components/Services/ImageRetouching"
                     className={`${
@@ -78,7 +78,7 @@ const ServiceDropDown=()=> {
                     <span>Image Retouching</span>
                   </Link>
                 )}
-              </Menu.Item>
+              </Menu.Item> */}
             </div>
           </Menu.Items>
         </Transition>
