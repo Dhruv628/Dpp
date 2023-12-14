@@ -68,8 +68,7 @@ export default function UploadPhotoModal({
     index: any,
     e: any,
     uploadPreset: any,
-    cloudname: any,
-    apiKey: any
+    cloudname: any, 
   ) => {
     if (index === 0 || index === 1 || index === 2 || index >= 6) {
       updateProgressDispatch(0);
@@ -88,22 +87,7 @@ export default function UploadPhotoModal({
       } else { 
         setImageUrl(tempUrl); 
       }
-    } else {
-      let tempUrl = await ImageUploadTwo(e, `${apiKey}`);
-      if (tempUrl === "Error") {
-        alert("Error uploading image, please try again.");
-      } else if (tempUrl === "File size exceeds the maximum limit of 5 MB.") {
-        {
-          alert(`${tempUrl}`);
-        }
-      } else {
-        setprogressBarDisplay(true);
-        setImageUrl(tempUrl);
-        updateProgressDispatch(10);
-        updateProgressDispatch(30);
-        updateProgressDispatch(100);
-      }
-    }
+    } 
   };
 
   const uploadImageFunc = async () => {
@@ -169,8 +153,7 @@ export default function UploadPhotoModal({
                         0,
                         e,
                         "DHEERAJ_PHOTO_POINT",
-                        "ds5fdn2yu",
-                        "ss"
+                        "ds5fdn2yu", 
                       );
 
                       updateProgressDispatch(100);
@@ -180,8 +163,7 @@ export default function UploadPhotoModal({
                         1,
                         e,
                         "DHEERAJ_PHOTO_POINT",
-                        "dnr7thjlu",
-                        "ss"
+                        "dnr7thjlu", 
                       );
                     }
                     if (index === 2) {
@@ -189,8 +171,7 @@ export default function UploadPhotoModal({
                         2,
                         e,
                         "DHEERAJ_PHOTO_POINT",
-                        "dimv7myy9",
-                        "ss"
+                        "dimv7myy9", 
                       );
                     }
                     if (index === 3) {
@@ -198,26 +179,23 @@ export default function UploadPhotoModal({
                         3,
                         e,
                         "DHEERAJ_PHOTO",
-                        "dimv7y9",
-                        "4ff3af5727bbcad03796"
+                        "dimv7y9", 
                       );
                     }
                     if (index === 4) {
                       uplaodImageHelper(
                         4,
                         e,
-                        "DHEERAJ_PHOTO",
-                        "dimv7y9",
-                        "25df74b02bcfa20387fd"
+                        "DHEERAJ_PHOTO_POINT",
+                        "ds5fdn2yu", 
                       );
                     }
                     if (index === 5) {
                       uplaodImageHelper(
                         5,
                         e,
-                        "DHEERAJ_PHOTO",
-                        "dimv7y9",
-                        "f172a9bfe4613bd3df39"
+                        "DHEERAJ_PHOTO_POINT",
+                        "dnr7thjlu", 
                       );
                     }
                     if (index === 6) {
@@ -225,16 +203,14 @@ export default function UploadPhotoModal({
                         6,
                         e,
                         "DHEERAJ_PHOTO_POINT",
-                        "dnsydvkyd",
-                        "ss"
+                        "dimv7myy9", 
                       );
                     } else {
                       uplaodImageHelper(
                         7,
                         e,
                         "DHEERAJ_PHOTO_POINT",
-                        "dnsydvkyd",
-                        "ss"
+                        "dnsydvkyd", 
                       );
                     }
                   }}
