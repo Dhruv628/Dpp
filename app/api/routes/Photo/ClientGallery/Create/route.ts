@@ -11,7 +11,7 @@ export const POST = async (req: NextRequest, res: Response) => {
   if (isAuthenticated) {
     try {
       const reqBody = await req.json();
-      const { name, url,password } = reqBody;
+      const { name, url,password,link } = reqBody;
       const clientGalleryExists = await ClientGallery.findOne({name:name});
       if (clientGalleryExists) {
         return NextResponse.json(
@@ -28,7 +28,8 @@ export const POST = async (req: NextRequest, res: Response) => {
       const clientGallery = await ClientGallery.create({
         name:name,
         images: imageArray,
-        password:password
+        password:password,
+        link:link
       });
 
       // Do whatever you want

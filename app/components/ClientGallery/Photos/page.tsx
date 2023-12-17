@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import DownloadIcon from "@/public/assets/Icons/DownloadIcon";
+import DownloadAllIcon from "@/public/assets/Icons/DownloadAllIcon";
 import MyModal from "../DeleteImageModal";
 import { useSearchParams } from "next/navigation";
 import NavBar from "../../Navbar/page";
@@ -51,25 +52,32 @@ const FullScreenImageModal: React.FC<FullScreenImageModalProps> = ({
 };
 
 const Photos: React.FC<PhotoProps> = ({}) => {
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
-  const reduxPhotos=useSelector((state)=>(state as any).clientGalleryReducer.photos);
+  const reduxPhotos = useSelector(
+    (state) => (state as any).clientGalleryReducer.photos
+  );
   const [photos, setPhotos] = useState<any>();
   const id = searchParams.get("id");
   const index = searchParams.get("index");
   const [loading, setloading] = useState(false);
-  const [hitRedux, sethitRedux] = useState(0)
+  const [hitRedux, sethitRedux] = useState(0);
+  const gDriveLinkRef = useRef<string>("");
 
   const handleImageLoad = () => {
     setIsLoading(false);
   };
 
+  const navigateToGdrive = () => {
+    window.open(gDriveLinkRef.current, "_blank");
+  };
+
   useEffect(() => {
     setloading(true);
     const fetchPhotos = async () => {
-      try { 
+      try {
         const response = await fetch(
           `/api/routes/Photo/ClientGallery/FindOne?id=${id}`,
           {
@@ -78,21 +86,23 @@ const Photos: React.FC<PhotoProps> = ({}) => {
         );
         const res = await response.json();
         console.log(res.clientGalleryExists);
-        setPhotos(res.clientGalleryExists);
-        dispatch(initializeFolderClientGallery(res.clientGalleryExists)) 
+        setPhotos(res.clientGalleryExists);  
+        gDriveLinkRef.current = res.clientGalleryExists.link;
+        console.log("link",res.clientGalleryExists.link)
+        dispatch(initializeFolderClientGallery(res.clientGalleryExists));
         setloading(false);
       } catch (error) {
-        console.log(error); 
+        console.log(error);
         setloading(false);
       }
     };
-    fetchPhotos(); 
-      if(reduxPhotos?.images){
-        setPhotos(reduxPhotos)
-      }
+    fetchPhotos();
+    if (reduxPhotos?.images) {
+      setPhotos(reduxPhotos);
+    }
     console.log(reduxPhotos);
-  }, [hitRedux]); 
-  
+  }, [hitRedux]);
+
   const downloadImage = (url: string, index: number) => {
     fetch(url)
       .then((res) => res.blob())
@@ -115,64 +125,79 @@ const Photos: React.FC<PhotoProps> = ({}) => {
   const closeFullScreenImage = () => {
     setFullScreenImage(null);
   };
-
+ 
   return !loading ? (
     <div className="bg-white text-black">
       <NavBar />
       <h1 className="flex justify-center w-full text-5xl my-5 font-bold tracking-wide">
         {photos?.name || "Client Gallery"}
       </h1>{" "}
-      <div className="inline-flex hover:bg-gray-200 mx-4 p-2 focus:bg-gray-200  rounded-lg items-center gap-2">
-        <UploadPhotoModal sethitRedux={sethitRedux} index={index} id={photos?._id} />
+      <div className=" flex justify-between px-4 py-2 items-center ">
+        <div className="hover:bg-gray-200 mx-4 p-2 focus:bg-gray-200  rounded-lg">
+          <UploadPhotoModal
+            sethitRedux={sethitRedux}
+            index={index}
+            id={photos?._id}
+          />
+        </div>
+        <div >
+          <button onClick={()=>navigateToGdrive()} className="flex bg-blue-500 hover:bg-blue-600 focus:bg-blue-600 rounded-lg p-2 text-white items-center gap-1">
+            Download all
+            <DownloadAllIcon fill="white" height={15} width={15} />
+          </button>
+        </div>
       </div>
       <div className="min-h-[90vh]">
-      <div className="grid grid-cols-3 gap-8 justify-center">
-        {photos?.images.map((image: any, index: number) => {
-          return (
-            <div className="m-4 h-[20rem]" key={image.url}>
-              <div className="relative h-[20rem] ">
-                <div className=" z-20 ">
-                <LazyLoadImage
-                  src={image.url}
-                  effect="blur"
-                  beforeLoad={()=>setIsLoading(true)}
-                  onLoad={handleImageLoad}
-                  className="cursor-pointer h-[20rem] w-[40rem] object-cover"
-                  alt={`Image ${index}`}
-                  onClick={() => openFullScreenImage(image.url)}
-                />
-                </div>
-                {isLoading && (
-                  <div  className="absolute inset-0  flex items-center justify-center"> 
-                      <CircularLoader /> 
+        <div className="grid grid-cols-3 gap-8 justify-center">
+          {photos?.images.map((image: any, index: number) => {
+            return (
+              <div className="m-4 h-[20rem]" key={image.url}>
+                <div className="relative h-[20rem] ">
+                  <div className=" z-20 ">
+                    <LazyLoadImage
+                      src={image.url}
+                      effect="blur"
+                      beforeLoad={() => setIsLoading(true)}
+                      onLoad={handleImageLoad}
+                      className="cursor-pointer h-[20rem] w-[40rem] object-cover"
+                      alt={`Image ${index}`}
+                      onClick={() => openFullScreenImage(image.url)}
+                    />
                   </div>
-                )}
-                {!isLoading && (
-                  <div className="absolute right-2 top-2">
-                    <div>
-                      <MyModal id={id} url={image.url}  sethitRedux={sethitRedux}/>
+                  {isLoading && (
+                    <div className="absolute inset-0  flex items-center justify-center">
+                      <CircularLoader />
                     </div>
-                    <button
-                      className="bg-blue-500 bg-opacity-60 mt-1 flex justify-center w-[2.5rem] px-2 py-2 rounded-sm"
-                      onClick={() => downloadImage(image.url, index)}
-                    >
-                      <DownloadIcon height={20} width={20} />
-                    </button>
-                  </div>
-                )}
-                {fullScreenImage === image.url && (
-                  <FullScreenImageModal
-                    imageUrl={image.url}
-                    onClose={closeFullScreenImage}
-                  />
-                )}
+                  )}
+                  {!isLoading && (
+                    <div className="absolute right-2 top-2">
+                      <div>
+                        <MyModal
+                          id={id}
+                          url={image.url}
+                          sethitRedux={sethitRedux}
+                        />
+                      </div>
+                      <button
+                        className="bg-blue-500 bg-opacity-60 mt-1 flex justify-center w-[2.5rem] px-2 py-2 rounded-sm"
+                        onClick={() => downloadImage(image.url, index)}
+                      >
+                        <DownloadIcon height={20} width={20} />
+                      </button>
+                    </div>
+                  )}
+                  {fullScreenImage === image.url && (
+                    <FullScreenImageModal
+                      imageUrl={image.url}
+                      onClose={closeFullScreenImage}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}{" "}
+            );
+          })}{" "}
+        </div>
       </div>
-      </div>
-      
       <Footer />
     </div>
   ) : (

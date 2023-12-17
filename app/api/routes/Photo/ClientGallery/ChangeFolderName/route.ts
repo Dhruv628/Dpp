@@ -11,7 +11,7 @@ export async function PUT(req: NextRequest, res: Response) {
   if (isAuthenticated) {
     try { 
       const reqBody = await req.json();
-      const { name } = reqBody;
+      const { name,link } = reqBody;
       const id=req.url.split("id=")[1]
       const clientGalleryExists = await ClientGallery.find({ _id: id });
       if (!clientGalleryExists) {
@@ -22,7 +22,7 @@ export async function PUT(req: NextRequest, res: Response) {
       }
       const updatedClientGallery = await ClientGallery.findOneAndUpdate(
         { _id: id },
-        { name: name }
+        { name: name,link:link }
       );
       return NextResponse.json(
         { success: true, updatedClientGallery },

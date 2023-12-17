@@ -11,6 +11,11 @@ const ClientGallerySchema = new Schema({
     trim:true,
     required: true
   },
+  link:{
+    type:String,
+    trim:true,
+    required: true
+  },
   images: [
     {
       url: {

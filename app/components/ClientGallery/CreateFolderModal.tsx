@@ -12,6 +12,7 @@ export default function CreateFolderModal({}: {}) {
   let [isOpen, setIsOpen] = useState(false);
   const [folderName, setFolderName] = useState(null);
   const [folderPassword, setFolderPassword] = useState(null);
+  const [folderGdriveLink, setfolderGdriveLink] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [progressBarDisplay, setprogressBarDisplay] = useState(false);
   const [progress, setprogress] = useState(0)
@@ -36,7 +37,8 @@ export default function CreateFolderModal({}: {}) {
       const sendBody = {
         name: folderName,
         url: imageUrl,
-        password:folderPassword
+        password:folderPassword,
+        link:folderGdriveLink
       };
       const createdFolder = await fetch(
         "/api/routes/Photo/ClientGallery/Create",
@@ -58,7 +60,7 @@ export default function CreateFolderModal({}: {}) {
   };
 
   const createFolderFunc = async () => {
-    if (typeof imageUrl === "string" && typeof folderName === "string") {
+    if (typeof imageUrl === "string" && typeof folderName === "string" && typeof folderGdriveLink ==="string") {
       try {
         setprogressBarDisplay(true)
         const response = await createaFolderApi();
@@ -95,7 +97,7 @@ export default function CreateFolderModal({}: {}) {
           onClick={openModal}
           className="flex items-center z-30 gap-3 text-white rounded-full  "
         >
-          <PlusIcon />
+          <PlusIcon h={35} w={35} />
         </button>
       </div>
 
@@ -129,6 +131,17 @@ export default function CreateFolderModal({}: {}) {
                   type="text"
                   onChange={(e: any) => setFolderPassword(e.target.value)}
                   placeholder="Enter folder password"
+                  className="rounded-sm border border-gray-300 py-2 px-3 w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-800 mb-1">
+                  G Drive Link<span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  onChange={(e: any) => setfolderGdriveLink(e.target.value)}
+                  placeholder="Enter folder G Drive Link"
                   className="rounded-sm border border-gray-300 py-2 px-3 w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>

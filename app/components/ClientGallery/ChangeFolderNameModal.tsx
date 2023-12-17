@@ -12,8 +12,8 @@ const ChangeFolderNameModal = ({changeNameFid}:{changeNameFid:any}) => {
         );
         
         const photos = useSelector((state) => (state as any).photosReducer?.photos);
-        
-        const [newFolderName, setNewFolderName] = useState(photos.find((e:any)=>e._id===changeNameFid).name)
+        const [newFolderName, setNewFolderName] = useState(photos.find((e:any)=>e._id===changeNameFid).name);
+        const [newFolderGDriveLink, setNewFolderGDriveLink] = useState(photos.find((e:any)=>e._id===changeNameFid).link);
     function closeModal() {
       setIsOpen(false);
     }
@@ -27,7 +27,8 @@ const ChangeFolderNameModal = ({changeNameFid}:{changeNameFid:any}) => {
     const changeFolderNameApi = async () => {
       try {
         const sentBody={
-            name:newFolderName
+            name:newFolderName,
+            link:newFolderGDriveLink
         }
         const updatedFolder = await fetch(
           `/api/routes/Photo/ClientGallery/ChangeFolderName?id=${changeNameFid}`,
@@ -59,7 +60,7 @@ const ChangeFolderNameModal = ({changeNameFid}:{changeNameFid:any}) => {
         }}
         className="flex w-full text-black items-center gap-3"
       >
-        <WritingIcon h={21} w={21} fill="black" /> Change Folder Name
+        <WritingIcon h={21} w={21} fill="black" /> Change Folder Info
       </button>
     </div>
 
@@ -97,6 +98,9 @@ const ChangeFolderNameModal = ({changeNameFid}:{changeNameFid:any}) => {
                 </Dialog.Title>
                  <div className="w-full mt-8">
                   <input type="text" value={newFolderName} onChange={(e)=>setNewFolderName(e.target.value)} name="" className="border rounded-md p-2 w-full text-black" placeholder="Enter the new folder name" id="" />
+                 </div>
+                 <div className="w-full mt-8">
+                  <input type="text" value={newFolderGDriveLink} onChange={(e)=>setNewFolderGDriveLink(e.target.value)} name="" className="border rounded-md p-2 w-full text-black" placeholder="Enter the new folder G Drive Link" id="" />
                  </div>
                 <div className="mt-8 gap-2 flex justify-center">
                   <button
